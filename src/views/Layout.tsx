@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 const Layout = () => {
   return (
     <>
-      <header className="p-4 bg-zinc-900 text-zinc-50 flex flex-wrap items-center justify-between">
+      <header className="p-4 bg-stone-900 text-stone-50 flex flex-wrap items-center justify-between">
         <div>
           <img src="/tauri.svg" alt="logo" className="w-12 h-12" />
         </div>
@@ -17,7 +17,7 @@ const Layout = () => {
           </NavLink>
         </div>
       </header>
-      <section className="bg-zinc-800 text-zinc-50">
+      <section className="bg-stone-800 text-stone-50">
         <Outlet />
       </section>
     </>
