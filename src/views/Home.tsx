@@ -1,7 +1,12 @@
 import { Button } from '@/components/ui/button';
+import { useStore } from '@/stores/DBStore';
 import { NavLink } from 'react-router';
 
 const Home = () => {
+  const { faces, votes } = useStore();
+
+  console.log('kanta', faces, votes);
+
   return (
     <>
       <h1 className="text-center p-4 text-lg">Home</h1>
