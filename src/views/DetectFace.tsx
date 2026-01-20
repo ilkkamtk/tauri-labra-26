@@ -23,11 +23,19 @@ const DetectFace: React.FC = () => {
           // 1. naama
           if (faces.length === 0) {
             navigate('/detected', { state: labeledFace.toJSON() });
+            return;
           }
 
           // löytyykö naamaa jo kannasta
           const match = await matchFace(labeledFace.descriptors[0], faces);
           console.log('mätsi', match);
+
+          const THRESHOLD = 0.4;
+          if (match && match.distance > THRESHOLD) {
+            // uusi naama
+            navigate('/detected', { state: labeledFace.toJSON() });
+            return;
+          }
         }
 
         timer = setTimeout(detectFace, 100); // Schedule the next detection
