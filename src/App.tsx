@@ -5,6 +5,7 @@ import Layout from './views/Layout';
 import DetectFace from './views/DetectFace';
 import { useStore } from './stores/DBStore';
 import { useEffect } from 'react';
+import Detected from './views/Detected';
 
 function App() {
   const { init } = useStore();
@@ -19,6 +20,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/face" element={<DetectFace />} />
+          <Route path="/detected" element={<Detected />} />
         </Route>
       </Routes>
     </BrowserRouter>

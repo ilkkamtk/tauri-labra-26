@@ -2,27 +2,32 @@ import Camera from '@/components/Camera';
 import { useFaceDetection } from '@/hooks/FaceHooks';
 import { useStore } from '@/stores/DBStore';
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
 
 const DetectFace: React.FC = () => {
+  const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { detectionResult, getDescriptors } = useFaceDetection();
-  const { faces, addFaces, getAllFaces } = useStore();
+  const { detectionResult, getDescriptors, matchFace } = useFaceDetection();
+  const { faces } = useStore();
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
     const detectFace = async () => {
       try {
-        const result = await getDescriptors(
+        const labeledFace = await getDescriptors(
           videoRef as React.RefObject<HTMLVideoElement>,
         ); // Start detecting faces
 
         // faces to DB
-        if (result) {
-          console.log('jaahs', result, faces.length);
-          console.log('testi', getAllFaces());
+        if (labeledFace) {
+          // 1. naama
           if (faces.length === 0) {
-            addFaces(result.descriptor);
+            navigate('/detected', { state: labeledFace.toJSON() });
           }
+
+          // löytyykö naamaa jo kannasta
+          const match = await matchFace(labeledFace.descriptors[0], faces);
+          console.log('mätsi', match);
         }
 
         timer = setTimeout(detectFace, 100); // Schedule the next detection

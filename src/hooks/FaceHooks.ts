@@ -1,5 +1,6 @@
 import { RefObject, useEffect, useState } from 'react';
 import * as faceapi from 'face-api.js';
+import randomstring from '@/lib/randomstring';
 
 type DetectionResult = faceapi.WithFaceDescriptor<
   faceapi.WithFaceLandmarks<
@@ -13,6 +14,21 @@ type DetectionResult = faceapi.WithFaceDescriptor<
 const useFaceDetection = () => {
   const [detectionResult, setDetectionResult] =
     useState<DetectionResult | null>(null);
+
+  // naaman mätsäys
+  const matchFace = async (
+    currentFace: Float32Array,
+    facesFromDB: Float32Array[],
+  ) => {
+    if (facesFromDB && facesFromDB.length > 0) {
+      const faceMatcher = new faceapi.FaceMatcher(
+        facesFromDB.map((descriptor) => {
+          return faceapi.LabeledFaceDescriptors.fromJSON(descriptor);
+        }),
+      );
+      return faceMatcher.matchDescriptor(currentFace);
+    }
+  };
 
   // Detect face from video frames
   const getDescriptors = async (videoRef: RefObject<HTMLVideoElement>) => {
@@ -38,7 +54,12 @@ const useFaceDetection = () => {
 
         setDetectionResult(result); // Update detection state
 
-        return result;
+        const faceName = randomstring(6);
+        const labeledFace = new faceapi.LabeledFaceDescriptors(faceName, [
+          result.descriptor,
+        ]);
+
+        return labeledFace;
       } catch (error) {
         console.error(error);
       }
@@ -61,7 +82,7 @@ const useFaceDetection = () => {
     loadModels();
   }, []);
 
-  return { detectionResult, getDescriptors };
+  return { detectionResult, getDescriptors, matchFace };
 };
 
 export { useFaceDetection };
