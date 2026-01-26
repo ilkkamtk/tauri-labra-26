@@ -7,6 +7,8 @@ const DetectGesture = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { gesture } = useGestureRecognition(videoRef);
 
+  console.log('detected gesture:', gesture);
+
   return (
     <>
       <section className="w-full">
