@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { GestureRecognizer, FilesetResolver } from '@mediapipe/tasks-vision';
 
-const useGestureRecognition = (videoRef: React.RefObject<HTMLVideoElement>) => {
+const useGestureRecognition = (
+  videoRef: React.RefObject<HTMLVideoElement | null>,
+) => {
   const [gesture, setGesture] = useState<string>('');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null); // Timer for frame processing
 
@@ -30,7 +32,7 @@ const useGestureRecognition = (videoRef: React.RefObject<HTMLVideoElement>) => {
 
     // Process video frames for gesture detection
     const processVideoFrames = async () => {
-      if (videoRef.current && gestureRecognizer) {
+      if (videoRef && videoRef.current && gestureRecognizer) {
         const nowInMs = Date.now();
         const results = gestureRecognizer.recognizeForVideo(
           videoRef.current,
@@ -49,19 +51,23 @@ const useGestureRecognition = (videoRef: React.RefObject<HTMLVideoElement>) => {
 
     // Main initialization function
     const main = async () => {
-      try {
-        if (!videoRef.current) return;
+      if (videoRef) {
+        try {
+          if (!videoRef.current) return;
 
-        // Wait for the video element to be ready
-        await new Promise<void>((resolve) => {
-          if (videoRef.current.readyState >= 2) resolve();
-          else videoRef.current.oncanplay = () => resolve();
-        });
+          // Wait for the video element to be ready
+          await new Promise<void>((resolve) => {
+            if (videoRef && videoRef.current) {
+              if (videoRef.current.readyState >= 2) resolve();
+              else videoRef.current.oncanplay = () => resolve();
+            }
+          });
 
-        await initializeGestureRecognizer();
-        timer.current = setTimeout(processVideoFrames, 100); // Start processing frames
-      } catch (error) {
-        console.error('Error in main initialization:', error);
+          await initializeGestureRecognizer();
+          timer.current = setTimeout(processVideoFrames, 100); // Start processing frames
+        } catch (error) {
+          console.error('Error in main initialization:', error);
+        }
       }
     };
 

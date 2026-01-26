@@ -1,9 +1,11 @@
 import Camera from '@/components/Camera';
+import { useGestureRecognition } from '@/hooks/GestureHooks';
 import { ThumbsUpIcon } from 'lucide-react';
 import { useRef } from 'react';
 
 const DetectGesture = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { gesture } = useGestureRecognition(videoRef);
 
   return (
     <>
@@ -13,6 +15,7 @@ const DetectGesture = () => {
       <section className="w-full">
         <div className="absolute top-24 left-0 p-4 bg-stone-900">
           <p>
+            {gesture}
             faceName: 'jotain' &nbsp; <ThumbsUpIcon />
           </p>
           <p>Ohjeet</p>
