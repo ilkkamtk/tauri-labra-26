@@ -40,12 +40,19 @@ const useGestureRecognition = (
             nowInMs,
           );
 
-          // Update gesture state
-          if (results.gestures.length > 0) {
-            const detectedGesture =
-              results.gestures[0][0]?.categoryName || 'No gesture detected';
-            setGesture(detectedGesture);
-          }
+          results.gestures.forEach((gestureGroup) => {
+            gestureGroup.forEach((gestureResult) => {
+              const currentGesture = gestureResult.categoryName;
+              if (currentGesture !== 'None') {
+                if (
+                  currentGesture === 'Thumb_Up' ||
+                  currentGesture === 'Thumb_Down'
+                ) {
+                  setGesture(currentGesture);
+                }
+              }
+            });
+          });
         }
       } catch (error) {
         setGesture('processVideoFrames error: ' + (error as Error).message);
