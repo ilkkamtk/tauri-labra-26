@@ -5,6 +5,7 @@ const useGestureRecognition = (
   videoRef: React.RefObject<HTMLVideoElement | null>,
 ) => {
   const [gesture, setGesture] = useState<string>('');
+  const [savedGesture, setSavedGesture] = useState<string>('');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null); // Timer for frame processing
 
   useEffect(() => {
@@ -43,11 +44,15 @@ const useGestureRecognition = (
           results.gestures.forEach((gestureGroup) => {
             gestureGroup.forEach((gestureResult) => {
               const currentGesture = gestureResult.categoryName;
+              console.log('testi', currentGesture, gesture);
               if (currentGesture !== 'None') {
                 if (
                   currentGesture === 'Thumb_Up' ||
                   currentGesture === 'Thumb_Down'
                 ) {
+                  setGesture(currentGesture);
+                  setSavedGesture(currentGesture);
+                } else if (currentGesture !== gesture) {
                   setGesture(currentGesture);
                 }
               }
