@@ -105,7 +105,7 @@ const useGestureRecognition = (
     };
   }, []);
 
-  return { gesture };
+  return { gesture, savedGesture };
 };
 
 export { useGestureRecognition };
