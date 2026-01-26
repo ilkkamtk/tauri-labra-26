@@ -32,21 +32,29 @@ const useGestureRecognition = (
 
     // Process video frames for gesture detection
     const processVideoFrames = async () => {
-      if (videoRef && videoRef.current && gestureRecognizer) {
-        const nowInMs = Date.now();
-        const results = gestureRecognizer.recognizeForVideo(
-          videoRef.current,
-          nowInMs,
-        );
+      try {
+        if (videoRef && videoRef.current && gestureRecognizer) {
+          const nowInMs = Date.now();
+          const results = gestureRecognizer.recognizeForVideo(
+            videoRef.current,
+            nowInMs,
+          );
 
-        // Update gesture state
-        if (results.gestures.length > 0) {
-          const detectedGesture =
-            results.gestures[0][0]?.categoryName || 'No gesture detected';
-          setGesture(detectedGesture);
+          // Update gesture state
+          if (results.gestures.length > 0) {
+            const detectedGesture =
+              results.gestures[0][0]?.categoryName || 'No gesture detected';
+            setGesture(detectedGesture);
+          }
+        }
+      } catch (error) {
+        setGesture('processVideoFrames error: ' + (error as Error).message);
+      } finally {
+        if (timer.current) {
+          clearTimeout(timer.current);
+          timer.current = setTimeout(processVideoFrames, 100); // Process frames periodically
         }
       }
-      timer.current = setTimeout(processVideoFrames, 100); // Process frames periodically
     };
 
     // Main initialization function

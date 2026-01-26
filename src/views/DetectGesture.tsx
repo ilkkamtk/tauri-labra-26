@@ -1,6 +1,6 @@
 import Camera from '@/components/Camera';
 import { useGestureRecognition } from '@/hooks/GestureHooks';
-import { ThumbsUpIcon } from 'lucide-react';
+import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import { useRef } from 'react';
 
 const DetectGesture = () => {
@@ -17,10 +17,17 @@ const DetectGesture = () => {
       <section className="w-full">
         <div className="absolute top-24 left-0 p-4 bg-stone-900">
           <p>
-            {gesture}
-            faceName: 'jotain' &nbsp; <ThumbsUpIcon />
+            faceName: 'jotain' &nbsp;
+            {gesture === 'Thumb_Up' && <ThumbsUpIcon className="inline" />}
+            {gesture === 'Thumb_Down' && <ThumbsDownIcon className="inline" />}
           </p>
-          <p>Ohjeet</p>
+          <p>
+            {gesture ? (
+              <p>Point up to save</p>
+            ) : (
+              <p>Thumb up or down to vote</p>
+            )}
+          </p>
         </div>
       </section>
     </>
